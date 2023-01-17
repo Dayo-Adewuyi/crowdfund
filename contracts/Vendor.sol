@@ -12,37 +12,40 @@ contract Vendor is UUPSUpgradeable, PausableUpgradeable{
         _disableInitializers();
     }
 
+    // function to initialize contract
     function initialize() initializer public {
        __Pausable_init();
         __UUPSUpgradeable_init();
             owner = msg.sender;
             tokenPrice = 0.1 ether;
     }
-
+    // state variable for owner
     address public owner;
 
-     /** @notice state variable for tokens */
+    //  state variable for token
     ICrowdToken public crowdToken;
-
+    // state variable for token price
     uint public tokenPrice;
-
+    // state variable for token address
     address public tokenAddress;
-
+    // modifier for only owner
     modifier onlyOwner {
         require(msg.sender == owner, "only owner can call function");
         _;
     }
-
+    // modifier for token address not empty
     modifier tokenAddressNotEmpty{
         require(tokenAddress != address(0),"token empty");
         _;
     }
+    // function to set token address
     function setTokenAddress(address _tokenAddress) public onlyOwner{
 
         tokenAddress = _tokenAddress;
 
         crowdToken = ICrowdToken(_tokenAddress);
     }
+    // function to set token price
     function buyToken() tokenAddressNotEmpty payable public {
         require(msg.value > 0, "invalid amount");
         uint amount = msg.value * 10 ** 4;
@@ -50,7 +53,7 @@ contract Vendor is UUPSUpgradeable, PausableUpgradeable{
         crowdToken.transfer(msg.sender, amount);
        
     }
-
+// function to withdraw funds
  function withdraw() public onlyOwner {
         uint256 amount = address(this).balance;
         require(amount > 0, "Nothing to withdraw, contract balance empty");

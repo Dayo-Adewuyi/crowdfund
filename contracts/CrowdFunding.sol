@@ -10,11 +10,11 @@ import "./ICrowdToken.sol";
 
 
 contract CrowdFunding is UUPSUpgradeable, PausableUpgradeable {
-
+ /// @custom:oz-upgrades-unsafe-allow constructor
 constructor() {
         _disableInitializers();
     }
-
+// function to initialize contract
      function initialize(address _tokenAddress) initializer public {
        __Pausable_init();
         __UUPSUpgradeable_init();
@@ -130,7 +130,9 @@ struct Donor{
     
     // function to donate
 function donate(uint256 _id, uint256 _amount) public  {
-        
+        require(_amount > 0, "Amount is required");
+        require(appeals[_id].beneficiary != msg.sender, "Beneficiary cannot donate");
+        require(_id > 0 && _id <= appealCount, "Invalid appeal id");
         require(appeals[_id].deadline > block.timestamp, "Deadline has passed");
         require(appeals[_id].completed == false, "Appeal is completed");
         require(crowdToken.balanceOf(msg.sender) > 0, "Insufficient balance");
@@ -157,6 +159,8 @@ function donate(uint256 _id, uint256 _amount) public  {
             require(appeals[_id].deadline < block.timestamp, "Deadline has not passed");
             require(appeals[_id].completed == false, "Appeal is completed");
             require(appeals[_id].beneficiary == msg.sender || owner == msg.sender,  "Only beneficiary can end appeal");
+            require(_id > 0 && _id <= appealCount, "Invalid appeal id");
+            
     
             appeals[_id].completed = true;
 
@@ -201,7 +205,18 @@ function donate(uint256 _id, uint256 _amount) public  {
                 }
             }
         }
-  
+
+// function to pause contract
+        function pause() public onlyOwner {
+            _pause();
+        }
+
+// function to unpause contract
+        function unpause() public onlyOwner {
+            _unpause();
+        }
+
+
  function _authorizeUpgrade(address newImplementation)
         internal
         onlyOwner
