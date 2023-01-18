@@ -1,13 +1,5 @@
-# Sample Hardhat Project
+# CROWDFUNDING SMART CONTRACT
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This is a project that enables users crowdfund for projects. Users can create campaigns soliciting for donations, donors can donate the custom erc20 token (crowd token) which can be gotten from the vendor contract. When funding goals are not met after the set deadline, funds are returned to donors.
 
-Try running some of the following tasks:
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
