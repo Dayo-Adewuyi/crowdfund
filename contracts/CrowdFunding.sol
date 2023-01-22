@@ -98,7 +98,7 @@ struct Donor{
         string memory _description,
         uint256 _targetAmount,
         uint256 _deadline
-    ) public {
+    ) public whenNotPaused {
         require(bytes(_name).length > 0, "Name is required");
         require(bytes(_description).length > 0, "Description is required");
         require(_targetAmount > 0, "Target amount is required");
@@ -129,7 +129,7 @@ struct Donor{
     }
     
     // function to donate
-function donate(uint256 _id, uint256 _amount) public  {
+function donate(uint256 _id, uint256 _amount) public whenNotPaused {
         require(_amount > 0, "Amount is required");
         require(appeals[_id].beneficiary != msg.sender, "Beneficiary cannot donate");
         require(_id > 0 && _id <= appealCount, "Invalid appeal id");
@@ -155,7 +155,7 @@ function donate(uint256 _id, uint256 _amount) public  {
         );
 }
         // function to end appeal
-        function endAppeal(uint256 _id) public {
+        function endAppeal(uint256 _id) public whenNotPaused {
             require(appeals[_id].deadline < block.timestamp, "Deadline has not passed");
             require(appeals[_id].completed == false, "Appeal is completed");
             require(appeals[_id].beneficiary == msg.sender || owner == msg.sender,  "Only beneficiary can end appeal");
@@ -176,7 +176,7 @@ function donate(uint256 _id, uint256 _amount) public  {
         }
     
     // function to get appeals
-        function getAppeals() public view returns (Appeal[] memory) {
+        function getAppeals() public whenNotPaused view returns (Appeal[] memory) {
             Appeal[] memory _appeals = new Appeal[](appealCount);
             for (uint256 i = 1; i <= appealCount; i++) {
                 _appeals[i - 1] = appeals[i];
@@ -186,7 +186,7 @@ function donate(uint256 _id, uint256 _amount) public  {
     
 
     // function to get donors
-        function getDonors() public view returns (Donor[] memory) {
+        function getDonors() public whenNotPaused view returns (Donor[] memory) {
             Donor[] memory _donors = new Donor[](donationId);
             for (uint256 i = 1; i <= donationId; i++) {
                 _donors[i - 1] = donors[i];
